@@ -1,1 +1,0 @@
-# docker-rails-vue-template

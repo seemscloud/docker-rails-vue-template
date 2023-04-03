@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  vue:
+    hostname: vue
+    container_name: vue
+    ports:
+      - "8080:8080"
+    build:
+      context: vue
+    environment:
+      VUE_HOST: "0.0.0.0"
+      VUE_PORT: "8080"
+      VUE_ENV: "dev"
+    volumes:
+      - ${PWD}/files/vue-frontend:/app/src
+    depends_on:
+      - postgresql-dev
+      - postgresql-prod
+      - rails
+  rails:
+    hostname: rails
+    container_name: rails
+    ports:
+      - "3000:3000"
+    build:
+      context: rails
+    environment:
+      PUMA_BIND: "0.0.0.0"
+      PUMA_PORT: "3000"
+      PUMA_ENV: "dev"
+    volumes:
+      - ${PWD}/files/rails-backend:/app/src
+    depends_on:
+      - postgresql-dev
+      - postgresql-prod
+  postgresql-dev:
+    hostname: postgresql-dev
+    container_name: postgresql-dev
+    build:
+      context: postgresql
+    environment:
+      POSTGRES_USER: "dev"
+      POSTGRES_PASSWORD: "dev"
+      POSTGRES_DB: "rails"
+  postgresql-prod:
+    hostname: postgresql-prod
+    container_name: postgresql-prod
+    build:
+      context: postgresql
+    environment:
+      POSTGRES_USER: "prod"
+      POSTGRES_PASSWORD: "prod"
+      POSTGRES_DB: "rails"
